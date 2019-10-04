@@ -39,7 +39,7 @@ PyObject* find_all(PyObject* self, PyObject* args, PyObject* kwargs) {
     return py_ret;
 }
 
-static PyMethodDef superfastcode_methods[] = {
+static PyMethodDef ACSearch_methods[] = {
     // The first property is the name exposed to Python, fast_tanh, the second is the C++
     // function name that contains the implementation.
     { "find_all", (PyCFunction)find_all, METH_VARARGS | METH_KEYWORDS, nullptr },
@@ -53,7 +53,7 @@ static PyModuleDef ACSearch_module = {
     "ACSearch",                        // Module name to use with Python import statements
     "ACSearch",  // Module description
     0,
-    superfastcode_methods                   // Structure that defines the methods of the module
+    ACSearch_methods                   // Structure that defines the methods of the module
 };
 
 PyMODINIT_FUNC PyInit_ACSearch() {
