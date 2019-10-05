@@ -10,16 +10,17 @@
 Vector* Vector_New() {
     Vector* vector = (Vector*)malloc(sizeof(Vector));
     vector->size = 0;
-    vector->values = NULL;
+    vector->capacity = VECTOR_INIT_CAPACITY;
+    vector->values = (void**)malloc(vector->capacity * sizeof(void*));;
     return vector;
 }
 void Vector_Push(Vector* vector, void* value) {
-    void** new_values = (void**)malloc((vector->size + 1) * sizeof(void*));
-    if (vector->values != NULL) {
-        memcpy(new_values, vector->values, vector->size * sizeof(void*));
-        free(vector->values);
+    if (vector->size >= vector->capacity) {
+        // 扩展容量
+        int new_capacity = vector->capacity << 1;
+        vector->values = (void**)realloc(vector->values, (new_capacity) * sizeof(void*));
+        vector->capacity = new_capacity;
     }
-    vector->values = new_values;
     vector->values[vector->size] = value;
     vector->size++;
 }
@@ -56,7 +57,7 @@ void Vector_Set_Int_Index(Vector* vector, int index, int value) {
     Vector_Set_Index(vector, index, pv);
 }
 int Vector_Get_Int_Index(Vector* vector, int index) {
-    int* pret = Vector_Get_Index(vector, index);
+    int* pret = (int*)Vector_Get_Index(vector, index);
     return *pret;
 }
 /* Vector End */
@@ -132,6 +133,8 @@ Map_Node* Map_Node_New() {
     node->hashcode = -1;
     node->left = NULL;
     node->right = NULL;
+    node->iter_left = NULL;
+    node->iter_right = NULL;
     node->key = NULL;
     node->value = NULL;
     return node;
@@ -172,6 +175,7 @@ bool string_equal(char* str_A, char* str_B) {
 Map* Map_New(int max_size) {
     Map* map = (Map*) malloc(sizeof(Map));
     map->max_size = max_size;
+    map->iter = Map_Node_New();
     map->values = (Map_Node**)malloc(sizeof(Map_Node*) * max_size);
     for (int i=0; i<max_size; i++) {
         map->values[i] = Map_Node_New();
@@ -234,6 +238,13 @@ void Map_Set_String(Map* map, char* key, void* value) {
             base->right->left = p;
         }
         base->right = p;
+        // iter
+        p->iter_left = map->iter;
+        p->iter_right = map->iter->iter_right;
+        if (map->iter->iter_right != NULL) {
+            map->iter->iter_right->iter_left = p;
+        }
+        map->iter->iter_right = p;
         map->size++;
     }
     p->value = value;
@@ -246,6 +257,12 @@ void Map_Delete_String(Map* map, char* key) {
         if (node->right != NULL) {
             node->right->left = node->left;
         }
+        // iter
+        node->iter_left->iter_right = node->iter_right;
+        if (node->iter_right != NULL) {
+            node->iter_right->iter_left = node->iter_left;
+        }
+
         map->size--;
         free(node);
         node = NULL;
@@ -267,18 +284,6 @@ void Map_Delete_String_Free(Map* map, char* key) {
         }
         free(node);
         node = NULL;
-    }
-}
-void Map_Traversal(Map* map, void (*func)(char*, void*)) {
-    for (int i=0; i<map->max_size; i++) {
-        Map_Node* base = map->values[i];
-        Map_Node* p = base->right;
-        while (p != NULL) {
-            char* key = p->key;
-            void* value = p->value;
-            func(key, value);
-            p = p->right;
-        }
     }
 }
 /* Map End*/

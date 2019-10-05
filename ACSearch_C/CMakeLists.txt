@@ -4,5 +4,5 @@ project(ACSearch)
 
 include_directories("./")
 
-add_executable(main main.c ACSearch.c container.c)
+add_executable(main main.cpp ACSearch.cpp container.cpp)
 

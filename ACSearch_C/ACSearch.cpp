@@ -45,7 +45,7 @@ ACSearch* ACSearch_New(Vector* patterns) {
 void ACSearch_Build(ACSearch* search) {
     for (int i=0; i<search->patterns->size; i++) {
         Node* p = search->root;
-        char* pattern = Vector_Get_Index(search->patterns, i);
+        char* pattern = (char*)Vector_Get_Index(search->patterns, i);
         char* pchar = pattern;
         int depth = 1;
         while (*pchar != '\0') {
@@ -74,7 +74,7 @@ void ACSearch_Build(ACSearch* search) {
         }
     }
     while (Queue_Empty(queue) != true) {
-        Node* p = Queue_Get_Head(queue);
+        Node* p = (Node*)Queue_Get_Head(queue);
         Queue_Pop(queue);
         Node* failure = p->failure;
         for (int i=0; i<256; i++) {
@@ -98,7 +98,7 @@ void ACSearch_Build(ACSearch* search) {
 Map* ACSearch_FindAll(ACSearch* search, char* text) {
     Map* map = Map_New(1000);
     for (int i=0; i<search->patterns->size; i++) {
-        char* pattern = Vector_Get_Index(search->patterns, i);
+        char* pattern = (char*)Vector_Get_Index(search->patterns, i);
         Vector* idxes = Vector_New();
         Map_Set_String(map, pattern, idxes);
     }
@@ -120,7 +120,7 @@ Map* ACSearch_FindAll(ACSearch* search, char* text) {
                     s[b->depth - 1] = b->key;
                     b = b->parent;
                 }
-                Vector* v = Map_Get_String(map, s);
+                Vector* v = (Vector*)Map_Get_String(map, s);
                 Vector_Push_Int(v, i - n->depth + 1);
             }
             p = n;

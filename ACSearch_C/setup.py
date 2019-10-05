@@ -13,12 +13,12 @@ class cpp_build_ext(build_ext):
 
 ext_module = Extension('ACSearch',
             sources = [
-                'py_ACSearch.c',
-                'ACSearch.c',
-                'container.c'
+                'py_ACSearch.cpp',
+                'ACSearch.cpp',
+                'container.cpp'
             ],
             include_dirs=['./'],
-            language='c')
+            language='c++')
 
 setup (name = 'ACSearch',
         version = '1.0',

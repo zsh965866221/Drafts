@@ -1,15 +1,6 @@
 #include "ACSearch.h"
 #include <stdio.h>
 
-void func(char* key, void* value) {
-    Vector* vector = (Vector*)value;
-    printf("  %s: ", key);
-    for (int i=0; i<vector->size; i++) {
-        int idx = Vector_Get_Int_Index(vector, i);
-        printf("%d, ", idx);
-    }
-    printf("\n");
-}
 
 int main() {
     char* L[] = {"ash", "shex", "bcd", "sha", "ab", "abc", "aba"};
@@ -28,6 +19,18 @@ int main() {
     ACSearch* search = ACSearch_New(patterns);
     Map* ret = ACSearch_FindAll(search, text);
     printf("ret: \n");
-    Map_Traversal(ret, func);
+    Map_Node* iter = ret->iter->iter_right;
+    while (iter != NULL) {
+        char* key = iter->key;
+        Vector* vector = (Vector*) iter->value;
+        printf("  %s: ", key);
+        for (int i=0; i<vector->size; i++) {
+            int idx = Vector_Get_Int_Index(vector, i);
+            printf("%d, ", idx);
+        }
+        printf("\n");
+        iter = iter->iter_right;
+    }
+
     return 0;
 }
