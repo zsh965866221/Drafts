@@ -24,11 +24,14 @@ int main() {
     // ---------------------------------------------
     std::cout << "Vector" << std::endl;
     start = std::clock();
-    for (int it=0; it<1000; it++) {
+    for (int it=0; it<10000; it++) {
         std::vector<std::string> cpp_vector;
-        for (int i=0; i<10000; i++) {
+        for (int i=0; i<1000; i++) {
             char* str = rand_str(10);
             cpp_vector.push_back(str);
+        }
+        for (int i=0; i<1000; i++) {
+            cpp_vector[i];
         }
     }
     end = std::clock();
@@ -36,11 +39,14 @@ int main() {
     std::cout << "CPP Total time: " << endtime * 1000 << "ms" << std::endl;	//ms为单位
     
     start = std::clock();
-    for (int it=0; it<1000; it++) {
+    for (int it=0; it<10000; it++) {
         Vector* c_vector = Vector_New();
-        for (int i=0; i<10000; i++) {
+        for (int i=0; i<1000; i++) {
             char* str = rand_str(10);
             Vector_Push(c_vector, str);
+        }
+        for (int i=0; i<1000; i++) {
+            Vector_Get_Index(c_vector, i);
         }
     }
     end = std::clock();
@@ -86,13 +92,13 @@ int main() {
     //------------------------------------------
     std::cout << "Queue" << std::endl;
     start = std::clock();
-    for (int it=0; it<1000; it++) {
+    for (int it=0; it<10000; it++) {
         std::queue<std::string> cpp_queue;
-        for (int i=0; i<10000; i++) {
+        for (int i=0; i<1000; i++) {
             char* key = rand_str(10);
             cpp_queue.push(key);
         }
-        for (int i=0; i<10000; i++) {
+        for (int i=0; i<1000; i++) {
             cpp_queue.pop();
         }
     }
@@ -101,13 +107,13 @@ int main() {
     std::cout << "CPP Total time: " << endtime * 1000 << "ms" << std::endl;	//ms为单位
     
     start = std::clock();
-    for (int it=0; it<1000; it++) {
+    for (int it=0; it<10000; it++) {
         Queue* c_queue = Queue_New();
-        for (int i=0; i<10000; i++) {
+        for (int i=0; i<1000; i++) {
             char* key = rand_str(10);
             Queue_Push(c_queue, key);
         }
-        for (int i=0; i<10000; i++) {
+        for (int i=0; i<1000; i++) {
             Queue_Pop(c_queue);
         }
     }
