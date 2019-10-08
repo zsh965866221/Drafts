@@ -9,7 +9,7 @@ struct Node {
     ending: bool,
     parent: Option<Rc<RefCell<Node>>>,
     failure: Option<Rc<RefCell<Node>>>,
-    children: Rc<RefCell<BTreeMap<char, Rc<RefCell<Node>>>>>
+    children: BTreeMap<char, Rc<RefCell<Node>>>
 }
 
 impl Node {
@@ -19,7 +19,7 @@ impl Node {
             ending,
             parent: None,
             failure: None,
-            children: Rc::new(RefCell::new(BTreeMap::new()))
+            children: BTreeMap::new()
         }
     }
 
@@ -56,12 +56,12 @@ impl ACSearch {
         for pattern in &self.patterns {
             let mut p = self.root.clone();
             for c in pattern.chars() {
-                if p.borrow_mut().children.borrow_mut().contains_key(&c) == false {
+                if p.borrow_mut().children.contains_key(&c) == false {
                     let n = Rc::new(RefCell::new(Node::new_with(c, false)));
                     n.borrow_mut().parent = Some(p.clone());
-                    p.borrow_mut().children.borrow_mut().insert(c, n);
+                    p.borrow_mut().children.insert(c, n);
                 }
-                p = p.clone().borrow_mut().children.borrow_mut().get(&c).unwrap().clone();
+                p = p.clone().borrow_mut().children.get(&c).unwrap().clone();
             }
         }
     }
@@ -72,11 +72,11 @@ fn main() {
     let search = ACSearch::new(patterns.clone());
     let mut queue = vec![search.root.clone()];
     while queue.is_empty() == false {
-        let mut p = queue.pop().unwrap();
+        let p = queue.pop().unwrap();
         let bp = p.borrow();
         println!("{}", bp);
-        for (c,kn) in bp.children.borrow().iter() {
-            queue.push(kn.clone());
+        for (_, cn) in bp.children.iter() {
+            queue.push(cn.clone());
         }
     }
 }
